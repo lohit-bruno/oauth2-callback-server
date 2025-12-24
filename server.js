@@ -3,23 +3,8 @@
 const http = require('http');
 const { parseArgs } = require('util');
 
-// Parse command-line arguments
-let { values } = parseArgs({
-  options: {
-    port: {
-      type: 'string',
-      short: 'p'
-    },
-    help: {
-      type: 'boolean',
-      short: 'h',
-      default: false
-    }
-  }
-});
-
-// Show help
-if (values.help) {
+// Help message
+const showHelp = () => {
   console.log(`
 OAuth2 Callback Server for Bruno
 
@@ -35,6 +20,34 @@ Examples:
   npx @usebruno/oauth2-callback-server --port 8090
   npx @usebruno/oauth2-callback-server -p 8090
   `);
+};
+
+// Parse command-line arguments
+let values;
+try {
+  ({ values } = parseArgs({
+    options: {
+      port: {
+        type: 'string',
+        short: 'p'
+      },
+      help: {
+        type: 'boolean',
+        short: 'h',
+        default: false
+      }
+    },
+    strict: true
+  }));
+} catch (err) {
+  console.error(`Error: ${err.message}\n`);
+  showHelp();
+  process.exit(1);
+}
+
+// Show help
+if (values.help) {
+  showHelp();
   process.exit(0);
 }
 
